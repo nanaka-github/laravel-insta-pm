@@ -30,30 +30,41 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
-            'name'=> 'required|min:1|max:50',
-            'email'=> 'required|email|max:50|unique:users,email,' . Auth::user()->id,
-            'avatar'=> 'mimes:jpeg,jpg,png,gif|max:1048',
-            'introduction'=> 'max:100'
-        ]);
+            $request->validate([
+                'name'=> 'required|min:1|max:50',
+                'email'=> 'required|email|max:50|unique:users,email,' . Auth::user()->id,
+                'avatar'=> 'mimes:jpeg,jpg,png,gif|max:1048',
+                'introduction'=> 'max:100'
+            ]);
 
-        $user = $this->user->findOrFail(Auth::user()->id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->introduction = $request->introduction;
+            $user = $this->user->findOrFail(Auth::user()->id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->introduction = $request->introduction;
 
-        if($request->avatar) {
-            $user->avatar = 'data:image/' . $request->avatar->extension() . ';base64,' . base64_encode(file_get_contents($request->avatar));
-        }
+            if($request->avatar) {
+                $user->avatar = 'data:image/' . $request->avatar->extension() . ';base64,' . base64_encode(file_get_contents($request->avatar));
+            }
 
-        #save
-        $user->save();
+            #save
+            $user->save();
 
-        #redirect
-        return redirect()->route('profile.show', Auth::user()->id);
+            #redirect
+            return redirect()->route('profile.show', Auth::user()->id);
+
+            #Update Password
+            $user = $this->user->findOrFail(Auth::user()->id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->introduction = $request->introduction;
+            if(!password_verify($request->old_password, $user->password))
+            {
+                return redirect()->back()->withErrors(['old_password' => 'The old password is incorrect.']);
+            }
+            $user->password = password_hash($request->new_password, PASSWORD_DEFAULT);
     }
 
-    public function foliowers($id){
+    public function followers($id){
 
           # Important note: anyone can view anyone's follower's lists the id parameter ($id) is the id of the user that you want to view
 

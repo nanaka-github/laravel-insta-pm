@@ -55,9 +55,10 @@
                     <p class="text-danger small">{{$message}}</p>
                   @enderror
                 </div>
-
                 <button type="submit" class="btn btn-warning px-5 mb-5">Save</button>
 
+
+                {{-- Change Password --}}
                 <div class="mb-3">
                     <label for="old-password" class="form-label fw-bold">Old password</label>
                     <input type="password" name="old_password" id="old-password" class="form-control" placeholder="Old Password">
